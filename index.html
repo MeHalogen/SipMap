@@ -75,6 +75,8 @@
 
         document.querySelector('.cards').style.display = 'block';
         document.querySelector('.saved-cafes').style.display = 'none';
+        // Clear the saved container to prevent z-index issues
+        document.querySelector('.saved-cafes').innerHTML = '';
 
         try {
             const response = await fetch(`${API_BASE_URL}/api/search-cafes?query=${encodeURIComponent(query)}`);
@@ -94,6 +96,8 @@
     function getLocationCachedOrNew() {
         document.querySelector('.cards').style.display = 'block';
         document.querySelector('.saved-cafes').style.display = 'none';
+        // Clear the saved container to prevent z-index issues
+        document.querySelector('.saved-cafes').innerHTML = '';
         
         const cache = JSON.parse(localStorage.getItem('cachedLocation') || '{}');
         const now = Date.now();
@@ -207,6 +211,9 @@
                         <div class="contact-info">
                             ${cafe.websiteUri ? `<a href="${cafe.websiteUri}" target="_blank" class="website-link"><i class="fas fa-globe"></i> Website</a>` : ''}
                             ${cafe.internationalPhoneNumber ? `<a href="tel:${cafe.internationalPhoneNumber}" class="phone-link"><i class="fas fa-phone"></i> ${cafe.internationalPhoneNumber}</a>` : ''}
+                            <button class="map-button" onclick="openMap('${cafe.name}', '${cafe.address}')">
+                                <i class="fas fa-map"></i> View on Map
+                            </button>
                         </div>
                     </div>
                     <div class="card-actions">
@@ -324,11 +331,14 @@
 
     function showSaved() {
         document.querySelector('.cards').style.display = 'none';
+        // Clear the cards container to prevent z-index issues
+        document.querySelector('.cards').innerHTML = '';
         const savedContainer = document.querySelector('.saved-cafes');
         savedContainer.style.display = 'grid';
         
         const saved = JSON.parse(localStorage.getItem('savedCafes') || '[]');
         if (saved.length === 0) {
+            savedContainer.classList.add('empty');
             savedContainer.innerHTML = `
                 <div class="empty-state">
                     <i class="fas fa-heart-broken" style="font-size: 3rem; color: #f44336; margin-bottom: 1rem;"></i>
@@ -338,6 +348,7 @@
             return;
         }
 
+        savedContainer.classList.remove('empty');
         savedContainer.innerHTML = saved.map(cafe => `
             <div class="saved-card">
                 <img src="${cafe.photo}" alt="${cafe.name}" />
@@ -348,6 +359,12 @@
                         ${cafe.priceLevel !== 'N/A' ? `<p class="price-level">${getPriceLevelSymbols(cafe.priceLevel)}</p>` : ''}
                     </div>
                     <p class="address"><i class="fas fa-map-marker-alt"></i> ${cafe.address}</p>
+                    <div class="saved-card-actions">
+                        <button class="map-button" onclick="openMap('${cafe.name}', '${cafe.address}')">
+                            <i class="fas fa-map"></i> View on Map
+                        </button>
+                    </div>
+                    
                 </div>
             </div>
         `).join('');
@@ -371,6 +388,13 @@
         } else {
             getLocationCachedOrNew();
         }
+    }
+
+    function openMap(name, address) {
+        // Create Google Maps URL with the cafe name and address
+        const query = encodeURIComponent(`${name}, ${address}`);
+        const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${query}`;
+        window.open(mapsUrl, '_blank');
     }
 
     // Add keyframe animation for toast

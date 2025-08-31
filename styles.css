@@ -308,9 +308,9 @@ button:hover {
 .cards {
     position: relative;
     width: 100%;
-    max-width: 350px;
+    max-width: 380px;
     margin: 2rem auto;
-    height: 500px;
+    min-height: 600px;
 }
 
 .swipe-wrapper {
@@ -323,6 +323,7 @@ button:hover {
 
 .location-card {
     width: 100%;
+    min-height: 550px;
     background: var(--navy-800);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-lg);
@@ -333,6 +334,8 @@ button:hover {
     position: relative;
     border: 1px solid var(--border-color);
     transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
 }
 
 .location-card:hover {
@@ -410,9 +413,14 @@ button:hover {
 
 .location-card .card-content {
     position: relative;
-    margin-top: -80px;
-    padding: var(--spacing-md);
-    background: var(--gradient-overlay);
+    margin-top: 0;
+    padding: var(--spacing-lg) var(--spacing-md) var(--spacing-md);
+    background: var(--navy-800);
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .location-card h3 {
@@ -506,24 +514,35 @@ button:hover {
 
 .contact-info {
     display: flex;
-    gap: 1rem;
-    justify-content: center;
-    margin-top: 1rem;
+    gap: var(--spacing-sm);
+    justify-content: flex-start;
+    margin-top: var(--spacing-sm);
+    flex-wrap: wrap;
 }
 
-.contact-info a {
-    color: #1e3d59;
+.contact-info a,
+.contact-info .map-button {
+    color: var(--text-secondary);
     text-decoration: none;
-    font-size: 0.9rem;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    background: #f8f9fa;
-    transition: all 0.2s ease;
+    font-size: 0.875rem;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-pill);
+    background: var(--navy-700);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    cursor: pointer;
+    font-family: inherit;
 }
 
-.contact-info a:hover {
-    background: #e9ecef;
-    transform: translateY(-2px);
+.contact-info a:hover,
+.contact-info .map-button:hover {
+    background: var(--primary-color);
+    color: var(--text-bright);
+    border-color: var(--primary-color);
+    transform: translateY(-1px);
 }
 
 .swipe-hint {
@@ -536,14 +555,6 @@ button:hover {
     margin-bottom: 0.5rem;
 }
 
-.saved-cafes {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 2rem;
-    padding: 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
-}
 
 .saved-card {
     background: var(--card-bg);
@@ -558,9 +569,66 @@ button:hover {
     transform: translateY(-5px);
 }
 
+.saved-card-actions {
+    padding: var(--spacing-sm);
+    border-top: 1px solid var(--border-color);
+    background: var(--navy-700);
+}
+
+.saved-card-actions .map-button {
+    width: 100%;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.875rem;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-pill);
+    background: var(--navy-800);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.375rem;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.saved-card-actions .map-button:hover {
+    background: var(--primary-color);
+    color: var(--text-bright);
+    border-color: var(--primary-color);
+    transform: translateY(-1px);
+}
+
+.saved-cafes {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    min-height: 60vh;
+}
+
+.saved-cafes.empty {
+    display: flex !important;       /* override grid */
+    justify-content: center;        /* center horizontally */
+    align-items: flex-start;        /* stick near top */
+    width: 100%;
+    margin-top: 2rem;               /* space below widget */
+}
+
+
 .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
-    color: #666;
-    padding: 3rem;
+    color: var(--text-secondary);
     font-size: 1.2rem;
+    position: relative;
+    z-index: 999;
+    background: var(--navy-900);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg);
 }
