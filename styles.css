@@ -1,28 +1,171 @@
 body {
-background-color: rgb(193, 236, 163);
-font-family: "Savate", sans-serif;
-text-align: center;
-padding: 1rem;
+    background-color: #f0f5f9;
+    font-family: "Savate", sans-serif;
+    text-align: center;
+    padding: 1rem;
+    margin: 0;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1 {
+    color: #1e3d59;
+    margin-bottom: 0.5rem;
+    font-size: 2.5rem;
+}
+
+.subtitle {
+    color: #596e79;
+    margin-bottom: 2rem;
+}
+
+.search-container {
+    margin: 2rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.search-box {
+    display: flex;
+    gap: 0.5rem;
+    width: 100%;
+    max-width: 500px;
+}
+
+.search-box input {
+    flex: 1;
+    font-family: "Savate", sans-serif;
+    font-size: 16px;
+    padding: 12px 20px;
+    border: 2px solid #e0e0e0;
+    border-radius: 25px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+/* Fix button text overflow */
+button {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: fit-content;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 20px;
+    font-size: 16px;
+}
+
+.search-box input:focus {
+    border-color: #1e3d59;
+    box-shadow: 0 0 0 2px rgba(30, 61, 89, 0.1);
+}
+
+.search-divider {
+    color: #666;
+    margin: 0.5rem 0;
+    font-size: 0.9rem;
+}
+
+.view-toggle {
+    margin: 1rem 0;
+    text-align: center;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.search-btn {
+    padding: 12px;
+    min-width: 44px;
+    border-radius: 50%;
+}
+
+.location-btn {
+    background-color: #2ecc71;
+}
+
+.location-btn:hover {
+    background-color: #27ae60;
+}
+
+.saved-btn {
+    background-color: #3498db;
+}
+
+.saved-btn:hover {
+    background-color: #2980b9;
+}
+
+.clear-btn {
+    background-color: #dc3545;
+}
+
+.clear-btn:hover {
+    background-color: #c82333;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    .action-buttons {
+        gap: 0.5rem;
+    }
+
+    button {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+
+    .search-btn {
+        padding: 8px;
+        min-width: 36px;
+    }
 }
 
 button {
-font-family: "Savate", sans-serif;
-font-size: 20px;
-background-color: darkgreen;
-color: white;
-border-radius: 10vw;
-padding: 1vw;
-outline-style: none;
-border: none;
+    font-family: "Savate", sans-serif;
+    font-size: 18px;
+    background-color: #1e3d59;
+    color: white;
+    border-radius: 25px;
+    padding: 12px 24px;
+    outline: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+button:hover {
+    background-color: #2b4f76;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
 .cards {
     position: relative;
     width: 100%;
-    max-width: 300px;
+    max-width: 350px;
     margin: 2rem auto;
-    height: 400px;
+    height: 500px;
 }
+
 .swipe-wrapper {
     position: absolute;
     top: 0;
@@ -30,21 +173,191 @@ border: none;
     width: 100%;
     transition: transform 0.3s ease, opacity 0.3s ease;
 }
+
 .location-card {
     width: 100%;
     background: white;
-    border-radius: 10px;
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
     overflow: hidden;
     text-align: center;
-    padding: 1rem;
+    padding: 0;
     margin-bottom: 1vh;
+    position: relative;
+}
+
+.card-content {
+    padding: 1.5rem;
+}
+
+.card-actions {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    padding: 1rem;
+    border-top: 1px solid #eee;
+}
+
+.action-button {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.accept-button {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.reject-button {
+    background-color: #f44336;
+    color: white;
+}
+
+.action-button:hover {
+    transform: scale(1.1);
 }
 .location-card img {
     width: 100%;
-    height: 150px;
+    height: 200px;
     object-fit: cover;
 }
 
-button:hover {
-    background: #555;
+.location-card h3 {
+    color: #1e3d59;
+    margin: 1rem 0;
+    font-size: 1.5rem;
+}
+
+.location-card p {
+    margin: 0.8rem 0;
+    line-height: 1.6;
+    color: #596e79;
+}
+
+.location-card .address {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 1rem;
+    padding: 0 1rem;
+}
+
+.card-details {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin: 0.5rem 0;
+}
+
+.location-card .rating,
+.saved-card .rating {
+    font-weight: bold;
+    color: #f7b731;
+}
+
+.location-card .price-level,
+.saved-card .price-level {
+    color: #2ecc71;
+    font-weight: 500;
+}
+
+.card-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    justify-content: center;
+    align-items: center;
+    margin: 0.5rem 0;
+}
+
+.card-details p {
+    margin: 0;
+    padding: 0.2rem 0.8rem;
+    border-radius: 15px;
+    background: #f8f9fa;
+    font-size: 0.9rem;
+}
+
+.open-now {
+    color: #2ecc71;
+}
+
+.place-type {
+    color: #666;
+}
+
+.description {
+    font-size: 0.9rem;
+    color: #666;
+    margin: 1rem 0;
+    line-height: 1.4;
+    text-align: left;
+    padding: 0 1rem;
+}
+
+.contact-info {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.contact-info a {
+    color: #1e3d59;
+    text-decoration: none;
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    background: #f8f9fa;
+    transition: all 0.2s ease;
+}
+
+.contact-info a:hover {
+    background: #e9ecef;
+    transform: translateY(-2px);
+}
+
+.swipe-hint {
+    position: relative;
+    text-align: center;
+    color: #999;
+    font-size: 0.8rem;
+    pointer-events: none;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.saved-cafes {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+    padding: 2rem;
+}
+
+.saved-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    overflow: hidden;
+    transition: transform 0.2s ease;
+}
+
+.saved-card:hover {
+    transform: translateY(-5px);
+}
+
+.empty-state {
+    text-align: center;
+    color: #666;
+    padding: 3rem;
+    font-size: 1.2rem;
 }
