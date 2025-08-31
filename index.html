@@ -2,38 +2,60 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <title>Cafe Curator</title>
+    <title>SipMap</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>☕️</text></svg>">
-    <link href="https://fonts.googleapis.com/css2?family=Savate:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗺️</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <h1>☕️ Cafe Curator</h1>
-        <p class="subtitle">Discover and save your favorite cafes</p>
+    <div class="app-container">
+        <nav class="top-nav">
+            <div class="brand">
+                <span class="logo">🗺️</span>
+                <h1>SipMap</h1>
+            </div>
+            <div class="nav-actions">
+                <button onclick="showSaved()" class="nav-btn saved-btn" title="Saved Places">
+                    <i class="fas fa-bookmark"></i>
+                </button>
+            </div>
+        </nav>
 
-        <div class="search-container">
-            <div class="search-box">
-                <input type="text" id="locationSearch" placeholder="Enter a location (e.g., Jaipur, New York)...">
-                <button onclick="searchByText()" class="search-btn">
-                    <i class="fas fa-search"></i>
-                </button>
+        <div class="main-content">
+            <div class="search-container">
+                <div class="search-interface">
+                    <div class="search-box">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" id="locationSearch" placeholder="Find cafes in any city...">
+                        <button onclick="searchByText()" class="action-button search-btn">
+                            <i class="fas fa-compass"></i>
+                        </button>
+                    </div>
+                    <div class="action-buttons">
+                        <button onclick="getLocationCachedOrNew()" class="action-button location-btn">
+                            <i class="fas fa-location-dot"></i>
+                            <span>Near Me</span>
+                        </button>
+                        <button onclick="showSaved()" class="action-button saved-btn">
+                            <i class="fas fa-bookmark"></i>
+                            <span>Saved</span>
+                        </button>
+                        <button onclick="clearSaved()" class="action-button clear-btn">
+                            <i class="fas fa-trash-can"></i>
+                            <span>Clear Saved</span>
+                        </button>
+                    </div>
+                    <div class="search-stats">
+                        <span class="results-count"></span>
+                        <button onclick="clearRejected()" class="text-button">
+                            <i class="fas fa-rotate"></i> Reset Rejected
+                        </button>
+                    </div>
+                </div>
             </div>
-            <div class="action-buttons">
-                <button onclick="getLocationCachedOrNew()" class="location-btn">
-                    <i class="fas fa-compass"></i> Near Me
-                </button>
-                <button onclick="showSaved()" class="saved-btn">
-                    <i class="fas fa-heart"></i> Saved
-                </button>
-                <button onclick="clearSaved()" class="clear-btn">
-                    <i class="fas fa-trash"></i> Clear
-                </button>
-            </div>
-        </div>
 
         <div class="cards"></div>
         <div class="saved-cafes" style="display: none;"></div>
