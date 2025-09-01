@@ -754,36 +754,33 @@ button:hover {
   background: #b71c1c;
 }
 .saved-cafes {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 2rem;
-    padding: 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
-    min-height: 60vh;
+  display: grid;
+  grid-template-columns: 1fr 480px 1fr;
+  align-items: center;
+  min-height: 400px;
+  width: 100%;
+  position: relative;
 }
 
 .saved-cafes.empty {
-    display: flex !important;       /* override grid */
-    justify-content: center;        /* center horizontally */
-    align-items: flex-start;        /* stick near top */
-    width: 100%;
-    margin-top: 2rem;               /* space below widget */
+  display: contents !important;
 }
 
-
 .empty-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    color: var(--text-secondary);
-    font-size: 1.2rem;
-    position: relative;
-    z-index: 999;
-    background: var(--navy-900);
-    padding: var(--spacing-lg);
-    border-radius: var(--radius-lg);
+  grid-column: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #9db4d4;
+  font-size: 1.2rem;
+  min-height: 220px;
+  width: 100%;
+  margin: 0 auto;
+  position: relative;
+  background: none;
+  box-shadow: none;
 }
 
 .star-rating {
