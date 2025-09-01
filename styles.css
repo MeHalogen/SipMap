@@ -617,49 +617,142 @@ button:hover {
 
 
 .saved-card {
-    background: var(--card-bg);
-    border-radius: 15px;
-    box-shadow: var(--shadow-md);
-    border: 1px solid var(--border-color);
-    overflow: hidden;
-    transition: transform 0.2s ease;
+  background: var(--navy-800);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 8px 32px rgba(30,61,89,0.18);
+  width: 100%;
+  max-width: 380px;
+  min-height: 550px;
+  margin: 2rem auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  text-align: center;
+  padding: 0;
+  transition: all 0.3s ease;
 }
 
-.saved-card:hover {
-    transform: translateY(-5px);
+.saved-card img {
+  width: 100%;
+  height: 240px;
+  object-fit: cover;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.saved-card-content {
+  padding: 1.5rem;
+  background: var(--navy-800);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  justify-content: space-between; /* Push actions to bottom */
+}
+
+.saved-card-content h3 {
+  font-family: var(--font-main);
+  font-size: 1.2rem;
+  color: #fff;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  background: none;
+  padding: 0.5rem 0;
+  border-bottom: none;
+  margin: 0;
+  text-align: center;
+}
+
+.saved-card-details {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin: 0.5rem 0;
+}
+
+.saved-card-details .star-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 1.1rem;
+}
+
+.saved-card-details .fa-star,
+.saved-card-details .fa-star-half-alt {
+  color: #fbbf24;
+  margin-right: 1px;
+}
+
+.saved-card-details .fa-star-half-alt {
+  margin-left: -2px;
+}
+
+.saved-card-details .fa-star,
+.saved-card-details .fa-star-half-alt,
+.saved-card-details .far.fa-star {
+  font-size: 1.1em;
+}
+
+.saved-card-details .rating-number {
+  color: #94a3b8;
+  font-size: 0.95em;
+  margin-left: 6px;
+}
+
+.saved-card-address {
+  font-size: 0.9rem;
+  color: #9db4d4;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  padding: 0 1rem;
+  text-align: center;
+  width: 100%;
 }
 
 .saved-card-actions {
-    padding: var(--spacing-sm);
-    border-top: 1px solid var(--border-color);
-    background: var(--navy-700);
+  display: flex;
+  justify-content: flex-end; /* Align buttons to the right */
+  gap: 8px; /* Space between buttons */
+  justify-content: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  background: var(--navy-800);
+  border-top: 1px solid var(--border-color);
 }
 
-.saved-card-actions .map-button {
-    width: 100%;
+.saved-card-actions .action-button {
+  width: 100%;
     color: var(--text-secondary);
     text-decoration: none;
     font-size: 0.875rem;
     padding: var(--spacing-xs) var(--spacing-sm);
+    margin-top: 5px;
     border-radius: var(--radius-pill);
-    background: var(--navy-800);
+    background: var(--navy-700);
     border: 1px solid var(--border-color);
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
-    justify-content: center;
     gap: 0.375rem;
     cursor: pointer;
     font-family: inherit;
 }
 
-.saved-card-actions .map-button:hover {
-    background: var(--primary-color);
-    color: var(--text-bright);
-    border-color: var(--primary-color);
-    transform: translateY(-1px);
+.saved-card-actions .action-button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
+.saved-card-actions .remove-button {
+  background: #dc3545;
+  color: #fff;
+}
+
+.saved-card-actions .remove-button:hover {
+  background: #b71c1c;
+}
 .saved-cafes {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
