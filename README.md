@@ -46,6 +46,8 @@ If you use a backend or API keys, copy `.env.example` to `.env` and fill in valu
 
 - `.env.example` — reference for required variables
 
+ - Set up your project in the Google Cloud Console. You'll enter a project name and billing information. Your website won't work as it should unless you enable billing, but you won't be charged if the API doesn't get called past the monthly limit (we'll teach you how to cap it at the limit, which is usually 10,000 API calls).
+
 ## 🧭 How to Use
 
 - Enter a city (or use Near Me) to fetch places.
