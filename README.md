@@ -47,6 +47,15 @@ If you use a backend or API keys, copy `.env.example` to `.env` and fill in valu
 - `.env.example` — reference for required variables
 
  - Set up your project in the Google Cloud Console. You'll enter a project name and billing information. Your website won't work as it should unless you enable billing, but you won't be charged if the API doesn't get called past the monthly limit (we'll teach you how to cap it at the limit, which is usually 10,000 API calls).
+ 
+ -  Here's how to create and protect your API key:
+
+1. Head to the Google Cloud Console and open the project picker, then click on new project in the corner.
+2. Come up with a name for your project! Note that the name can't be changed later.
+3. Make sure you're on your cafe finder project and select the APIs & Services button.
+4. On the left menu, click on library.
+5. Search for the Places API (new) and click on it. Make sure the Places API is enabled.
+6. Click on the hamburger menu and look for the APIs & Services button again. Then click on create credentials, then API key.
 
 ## 🧭 How to Use
 
