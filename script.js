@@ -351,38 +351,44 @@ function showSaved() {
     document.querySelector('.cards').innerHTML = '';
     const savedContainer = document.querySelector('.saved-cafes');
     savedContainer.style.display = 'grid';
-    
-    const saved = JSON.parse(localStorage.getItem('savedCafes') || '[]');
-    if (saved.length === 0) {
-        savedContainer.classList.add('empty');
+    document.querySelectorAll('.action-button').forEach(btn => btn.classList.remove('active'));
+    const savedBtn = document.querySelector('.saved-btn');
+    if (savedBtn) {
+        savedBtn.classList.add('active');
+    }
+    const savedCafes = JSON.parse(localStorage.getItem('savedCafes') || '[]');
+    if (savedCafes.length === 0) {
         savedContainer.innerHTML = `
             <div class="empty-state">
-                <i class="fas fa-heart-broken" style="font-size: 3rem; color: #f44336; margin-bottom: 1rem;"></i>
-                <p>No saved cafes yet. Start exploring!</p>
+                <i class="fas fa-heart" style="font-size: 3rem; color: #1e3d59; margin-bottom: 1rem;"></i>
+                <p>You have no saved cafes yet. Start exploring and save your favorite ones!</p>
             </div>
         `;
-        return;
-    }
-
-    savedContainer.classList.remove('empty');
-    savedContainer.innerHTML = saved.map(cafe => `
-        <div class="saved-card">
-            <img src="${cafe.photo}" alt="${cafe.name}" />
-            <div class="card-content">
-                <h3>${cafe.name}</h3>
-                <div class="card-details">
-                    ${cafe.rating !== 'N/A' ? getStarRating(cafe.rating) : ''}
-                    ${cafe.priceLevel !== 'N/A' ? `<p class="price-level">${getPriceLevelSymbols(cafe.priceLevel)}</p>` : ''}
-                </div>
-                <p class="address"><i class="fas fa-map-marker-alt"></i> ${cafe.address}</p>
-                <div class="saved-card-actions">
-                    <button class="map-button" onclick="openMap('${cafe.name}', '${cafe.address}')">
-                        <i class="fas fa-map"></i> View on Map
-                    </button>
+    } else {
+        savedContainer.innerHTML = savedCafes.map(cafe => `
+            <div class="saved-card">
+                <img src="${cafe.photo}" alt="${cafe.name}" />
+                <div class="saved-card-content">
+                    <h3>${cafe.name}</h3>
+                    <div class="saved-card-details">
+                        ${cafe.rating !== 'N/A' ? getStarRating(cafe.rating) : ''}
+                        ${cafe.priceLevel !== 'N/A' ? `<p class="price-level">${getPriceLevelSymbols(cafe.priceLevel)}</p>` : ''}
+                        ${cafe.openNow ? '<p class="open-now"><i class="fas fa-clock"></i> Open</p>' : ''}
+                        ${cafe.type ? `<p class="place-type"><i class="fas fa-utensils"></i> ${cafe.type}</p>` : ''}
+                    </div>
+                    <p class="saved-card-address"><i class="fas fa-map-marker-alt"></i> ${cafe.address}</p>
+                    <div class="saved-card-actions">
+                        <button class="action-button" onclick="openMap('${cafe.name}', '${cafe.address}')">
+                            <i class="fas fa-map"></i> View on Map
+                        </button>
+                        <button class="action-button remove-button" onclick="removeSavedCafe(this)">
+                            <i class="fas fa-trash"></i> Remove
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
-    `).join('');
+        `).join('');
+    }
 }
 
 function clearSaved() {
