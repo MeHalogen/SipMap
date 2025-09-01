@@ -12,21 +12,18 @@
 </head>
 <body>
     <div class="app-container">
-        <nav class="top-nav">
-            <div class="brand">
-                <span class="logo">🗺️</span>
-                <h1>SipMap</h1>
-            </div>
-            <div class="nav-actions">
-            </div>
-        </nav>
-
         <div class="main-content">
+            <header class="app-header">
+              <div class="header-flex">
+                <span class="brand-name">Sip<span class="accent">Map</span></span>
+                <span class="tagline">SWIPE RIGHT ON FLAVOR</span>
+              </div>
+            </header>
             <div class="search-container">
                 <div class="search-interface">
                     <div class="search-box">
                         <i class="fas fa-search search-icon"></i>
-                        <input type="text" id="locationSearch" placeholder="Find cafes in any city...">
+                        <input type="text" id="locationSearch" placeholder="Enter the name of the city...">
                         <button onclick="searchByText()" class="action-button search-btn">
                             <i class="fas fa-compass"></i>
                         </button>
