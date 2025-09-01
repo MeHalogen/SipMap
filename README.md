@@ -1,4 +1,4 @@
-# SipMap — Swipe. Sip. Savor.
+# SipMap — Swipe Right on Flavor
 
 Discover the best cafes and drink spots with a simple swipe. SipMap is a sleek, minimal, mobile‑friendly web app for quick, delightful exploration.
 
