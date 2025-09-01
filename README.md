@@ -1,61 +1,96 @@
-# SipMap
+# SipMap — Swipe. Sip. Savor.
 
-Swipe. Sip. Savor. 🍸
+Discover the best cafes and drink spots with a simple swipe. SipMap is a sleek, minimal, mobile‑friendly web app for quick, delightful exploration.
 
-Discover the best cafes, bars, and drink spots in any city with a swipe! SipMap is a modern, minimalist web app designed for quick, delightful exploration of local flavors.
+> Project by Mehal Srivastava
 
-## Features
+<p align="left">
+  <img alt="Vanilla JS" src="https://img.shields.io/badge/JS-Vanilla-323330?logo=javascript&logoColor=F7DF1E">
+  <img alt="Responsive" src="https://img.shields.io/badge/Responsive-Yes-0ea5e9">
+  <img alt="License" src="https://img.shields.io/badge/License-MIT-22c55e">
+</p>
 
-- **Swipeable Card Stack:** Effortlessly browse venues with left/right swipes.
-- **Mini Rating Stars:** See friendly star ratings at a glance.
-- **Save & Reject:** Heart your favorites, reject the rest—your choices are remembered.
-- **Surprise Me:** Feeling indecisive? Let SipMap pick a random spot for you!
-- **Skeleton Loading:** Enjoy smooth, animated loading states for instant feedback.
-- **Search Anywhere:** Find cafes by city, drink, or location.
-- **Responsive & Fast:** Works beautifully on mobile and desktop.
+## ✨ Features
 
-## How It Works
+- Swipeable card stack (touch + mouse) via Hammer.js
+- Search by city and quick "Near Me" action
+- Save and Reject with persistent localStorage
+- Saved view with robust de‑duplication (place_id + normalized name+address)
+- "Surprise Me" without losing your current stack order
+- Skeleton loading to smooth initial renders
+- Modern UI: star ratings, price level, open‑now, type, map link
+- Works beautifully on mobile and desktop
 
-1. **Search** for a city or drink.
-2. **Swipe** through curated venues.
-3. **Save** your favorites with a tap.
-4. **Surprise Me** for a random pick.
-5. **Enjoy** your next sip adventure!
+## 📁 Project Structure
 
-## Screenshots
+```
+SipMap/
+├─ index.html     # App markup and layout
+├─ styles.css     # Theme, layout, animations, components
+└─ script.js      # App logic, swipe, state, rendering
+```
 
-![SipMap Screenshot](images/image.png)
+## 🚀 Quick Start
 
-## Tech Stack
+Option A — Open directly (no build):
+- Double‑click `index.html` to open in your browser.
 
-- HTML5, CSS3, JavaScript (Vanilla)
-- Font Awesome for icons
-- Hammer.js for swipe gestures
-- Responsive, accessible design
+Option B — Serve locally (recommended):
+```bash
+# Python 3 simple server
+python3 -m http.server 5500
+# open http://127.0.0.1:5500/index.html
+```
 
-## Getting Started
+## 🔧 Configuration (optional)
+If you use a backend or API keys, copy `.env.example` to `.env` and fill in values. The front‑end reads from your environment only if you wire a server or bundler that injects them.
 
-1. **Clone the repo:**
-   ```bash
-   git clone https://github.com/MeHalogen/SipMap.git
-   ```
-2. **Open `index.html` in your browser.**
-3. **(Optional) Start the backend server** for live cafe data.
+- `.env.example` — reference for required variables
 
-## Customization
+## 🧭 How to Use
 
-- Change the logo in `/images/image.png`.
-- Tweak colors and styles in `styles.css`.
-- Add new features in `script.js`.
+- Enter a city (or use Near Me) to fetch places.
+- Swipe cards:
+  - Right = Save
+  - Left = Reject
+- Action buttons under the search:
+  - Near Me — browser geolocation
+  - Saved — view your saved cafes (button stays highlighted while active)
+  - Clear Saved — remove all saved cafes
+  - Surprise Me — bring a random cafe to the top
+  - Reset Rejected — clear the rejected list so hidden cards can reappear
 
-## Contributing
+State is saved in localStorage:
+- `savedCafes` — favorites; duplicates are automatically prevented and cleaned
+- `rejectedCafes` — hidden cards for the session/area
 
-Pull requests and suggestions are welcome! Open an issue or submit a PR to help make SipMap even better.
+## 🛠 Implementation Notes
 
-## License
+- Gestures: Hammer.js detects left/right swipes for save/reject.
+- De‑duplication: a cafe is considered the same if it shares the same `place_id` OR a normalized `name + address` key (case/space‑insensitive). This covers providers returning different IDs for the same venue.
+- Mapping: Quick link opens the location in Google Maps.
+
+## ❓ Troubleshooting
+
+- Seeing duplicates? Open the Saved view once—duplicates are auto‑cleaned. If needed, use Clear Saved and re‑save.
+- Near Me not working? Allow location permissions in the browser.
+- No results? Try another city or click Reset Rejected.
+
+## 🗺️ Roadmap
+
+- Filters (price, rating, open now)
+- Shareable saved lists
+- PWA install with offline support
+- Light/Dark theme toggle
+
+## 🤝 Contributing
+
+Issues and PRs are welcome. If proposing UI changes, include a screenshot or quick mock to speed up review.
+
+## 📄 License
 
 MIT
 
----
+—
 
-Made with ❤️ for flavor explorers everywhere.
+Crafted with care by Mehal Srivastava. Enjoy the exploration! ☕️🗺️
