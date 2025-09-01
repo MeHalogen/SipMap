@@ -97,7 +97,6 @@ State is saved in localStorage:
 
 Issues and PRs are welcome. If proposing UI changes, include a screenshot or quick mock to speed up review.
 
-
-—
+------
 
 Crafted with care by Mehal Srivastava. Enjoy the exploration! ☕️🗺️
