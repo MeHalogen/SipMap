@@ -830,3 +830,13 @@ button:hover {
 .heart-sparkle {
   animation: heart-sparkle 0.5s linear 1;
 }
+.page-credit {
+  position: fixed;       /* Always stays in place even when scrolling */
+  bottom: 16px;          /* Distance from bottom of the viewport */
+  right: 16px;           /* Distance from right edge */
+  font-size: 18px;
+  color: teal;
+  padding: 4px 8px;      /* Optional: some padding */
+  border-radius: 4px;    /* Optional: rounded corners */
+  z-index: 1000;         /* Keep it on top of other elements */
+}
