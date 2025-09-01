@@ -136,98 +136,109 @@ function getStarRating(rating) {
     return `<span class="star-rating">${stars} <span class="rating-number">${rating}</span></span>`;
 }
 
+// Helper: normalize strings for dedupe keys
+function normalizeKey(str) {
+  return (str || '').toString().toLowerCase().replace(/\s+/g, ' ').trim();
+}
+function cafeKeyByNameAddress(cafe) {
+  return `${normalizeKey(cafe.name)}|${normalizeKey(cafe.address)}`;
+}
+
 let fullCafeResults = [];
 let lastSurpriseIndex = null;
 
 function displayCards(cafes) {
-    fullCafeResults = cafes;
-    const container = document.querySelector('.cards');
-    container.innerHTML = '';
-    
-    // Filter out rejected cafes
-    const filteredCafes = cafes.filter(cafe => !rejectedCafes.has(cafe.place_id));
-    
-    // Filter out already saved cafes
-    const savedCafes = new Set(JSON.parse(localStorage.getItem('savedCafes') || '[]')
-        .map(cafe => cafe.place_id));
-    
-    const availableCafes = filteredCafes.filter(cafe => !savedCafes.has(cafe.place_id));
+  fullCafeResults = cafes;
+  const container = document.querySelector('.cards');
+  container.innerHTML = '';
 
-    if (availableCafes.length === 0) {
-        container.innerHTML = `
-            <div class="empty-state">
-                <i class="fas fa-coffee" style="font-size: 3rem; color: #1e3d59; margin-bottom: 1rem;"></i>
-                <p>No more cafes to show in this area. Try searching in a different location!</p>
-            </div>
-        `;
-        return;
-    }
+  // Filter out rejected cafes
+  const filteredCafes = cafes.filter(cafe => !rejectedCafes.has(cafe.place_id));
 
-    availableCafes.forEach((cafe, i) => {
-        const wrapper = document.createElement('div');
-        wrapper.className = 'swipe-wrapper';
-        wrapper.style.zIndex = 200 - i;
+  // Filter out already saved cafes (by id OR by name+address key)
+  const rawSaved = JSON.parse(localStorage.getItem('savedCafes') || '[]');
+  const savedIds = new Set(rawSaved.map(c => c.place_id).filter(Boolean));
+  const savedKeys = new Set(rawSaved.map(c => cafeKeyByNameAddress(c)));
 
-        const card = document.createElement('div');
-        card.className = 'location-card';
-        card.dataset.placeId = cafe.place_id;
+  const availableCafes = filteredCafes.filter(cafe =>
+    !savedIds.has(cafe.place_id) && !savedKeys.has(cafeKeyByNameAddress(cafe))
+  );
 
-        const imgUrl = cafe.photo || 'https://via.placeholder.com/400x200?text=No+Image';
+  if (availableCafes.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <i class="fas fa-coffee" style="font-size: 3rem; color: #1e3d59; margin-bottom: 1rem;"></i>
+        <p>No more cafes to show in this area. Try searching in a different location!</p>
+      </div>
+    `;
+    return;
+  }
 
-        const cafeData = {
-            name: cafe.name,
-            place_id: cafe.place_id,
-            photo: imgUrl,
-            rating: cafe.rating,
-            address: cafe.address,
-            priceLevel: cafe.priceLevel,
-            type: cafe.type,
-            description: cafe.description,
-            openNow: cafe.openNow,
-            websiteUri: cafe.websiteUri,
-            internationalPhoneNumber: cafe.internationalPhoneNumber
-        };
+  availableCafes.forEach((cafe, i) => {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'swipe-wrapper';
+    wrapper.style.zIndex = 200 - i;
 
-        card.innerHTML = `
-            <img src="${imgUrl}" alt="${cafe.name}" />
-            <div class="card-content">
-                <h3>${cafe.name}</h3>
-                <div class="card-details">
-                    ${cafe.rating !== 'N/A' ? getStarRating(cafe.rating) : ''}
-                    ${cafe.priceLevel !== 'N/A' ? `<p class="price-level">${getPriceLevelSymbols(cafe.priceLevel)}</p>` : ''}
-                    ${cafe.openNow ? '<p class="open-now"><i class="fas fa-clock"></i> Open</p>' : ''}
-                    ${cafe.type ? `<p class="place-type"><i class="fas fa-utensils"></i> ${cafe.type}</p>` : ''}
-                </div>
-                <p class="address"><i class="fas fa-map-marker-alt"></i> ${cafe.address}</p>
-                ${cafe.description ? `<p class="description">${cafe.description}</p>` : ''}
-                <div class="contact-info">
-                    ${cafe.websiteUri ? `<a href="${cafe.websiteUri}" target="_blank" class="website-link"><i class="fas fa-globe"></i> Website</a>` : ''}
-                    ${cafe.internationalPhoneNumber ? `<a href="tel:${cafe.internationalPhoneNumber}" class="phone-link"><i class="fas fa-phone"></i> ${cafe.internationalPhoneNumber}</a>` : ''}
-                    <button class="map-button" onclick="openMap('${cafe.name}', '${cafe.address}')">
-                        <i class="fas fa-map"></i> View on Map
-                    </button>
-                </div>
-            </div>
-            <div class="card-actions">
-                <button class="action-button reject-button" onclick="rejectCafe(this.parentElement.parentElement.parentElement)">
-                    <i class="fas fa-times"></i>
-                </button>
-                <button class="action-button accept-button" data-cafe='${JSON.stringify(cafeData)}' onclick="acceptCafeFromButton(this)">
-                    <i class="fas fa-heart"></i>
-                </button>
-            </div>
-            <div class="swipe-hint">
-                <p><small>Swipe right to save or use buttons below</small></p>
-            </div>
-        `;
+    const card = document.createElement('div');
+    card.className = 'location-card';
+    card.dataset.placeId = cafe.place_id;
 
-        wrapper.appendChild(card);
-        container.appendChild(wrapper);
+    const imgUrl = cafe.photo || 'https://via.placeholder.com/400x200?text=No+Image';
 
-        const hammertime = new Hammer(wrapper);
-        hammertime.on('swipeleft', () => rejectCafe(wrapper));
-        hammertime.on('swiperight', () => acceptCafe(wrapper, cafeData));
-    });
+    const cafeData = {
+      name: cafe.name,
+      place_id: cafe.place_id,
+      photo: imgUrl,
+      rating: cafe.rating,
+      address: cafe.address,
+      priceLevel: cafe.priceLevel,
+      type: cafe.type,
+      description: cafe.description,
+      openNow: cafe.openNow,
+      websiteUri: cafe.websiteUri,
+      internationalPhoneNumber: cafe.internationalPhoneNumber
+    };
+
+    card.innerHTML = `
+      <img src="${imgUrl}" alt="${cafe.name}" />
+      <div class="card-content">
+        <h3>${cafe.name}</h3>
+        <div class="card-details">
+          ${cafe.rating !== 'N/A' ? getStarRating(cafe.rating) : ''}
+          ${cafe.priceLevel !== 'N/A' ? `<p class="price-level">${getPriceLevelSymbols(cafe.priceLevel)}</p>` : ''}
+          ${cafe.openNow ? '<p class="open-now"><i class="fas fa-clock"></i> Open</p>' : ''}
+          ${cafe.type ? `<p class="place-type"><i class="fas fa-utensils"></i> ${cafe.type}</p>` : ''}
+        </div>
+        <p class="address"><i class="fas fa-map-marker-alt"></i> ${cafe.address}</p>
+        ${cafe.description ? `<p class="description">${cafe.description}</p>` : ''}
+        <div class="contact-info">
+          ${cafe.websiteUri ? `<a href="${cafe.websiteUri}" target="_blank" class="website-link"><i class="fas fa-globe"></i> Website</a>` : ''}
+          ${cafe.internationalPhoneNumber ? `<a href="tel:${cafe.internationalPhoneNumber}" class="phone-link"><i class="fas fa-phone"></i> ${cafe.internationalPhoneNumber}</a>` : ''}
+          <button class="map-button" onclick="openMap('${cafe.name}', '${cafe.address}')">
+            <i class="fas fa-map"></i> View on Map
+          </button>
+        </div>
+      </div>
+      <div class="card-actions">
+        <button class="action-button reject-button" onclick="rejectCafe(this.parentElement.parentElement.parentElement)">
+          <i class="fas fa-times"></i>
+        </button>
+        <button class="action-button accept-button" data-cafe='${JSON.stringify(cafeData)}' onclick="acceptCafeFromButton(this)">
+          <i class="fas fa-heart"></i>
+        </button>
+      </div>
+      <div class="swipe-hint">
+        <p><small>Swipe right to save or use buttons below</small></p>
+      </div>
+    `;
+
+    wrapper.appendChild(card);
+    container.appendChild(wrapper);
+
+    const hammertime = new Hammer(wrapper);
+    hammertime.on('swipeleft', () => rejectCafe(wrapper));
+    hammertime.on('swiperight', () => acceptCafe(wrapper, cafeData));
+  });
 }
 
 function surpriseMe() {
@@ -265,37 +276,29 @@ function acceptCafeFromButton(button) {
 }
 
 function acceptCafe(wrapper, cafeData) {
-    let saved = JSON.parse(localStorage.getItem('savedCafes') || '[]');
-    // Strict equality check for duplicates using place_id
-    const isDuplicate = saved.some(c => c.place_id === cafeData.place_id);
-    
-    if (!isDuplicate) {
-        // Remove any potential duplicates first
-        saved = saved.filter(c => c.place_id !== cafeData.place_id);
-        // Then add the new cafe
-        saved.push(cafeData);
-        localStorage.setItem('savedCafes', JSON.stringify(saved));
-        showToast(`${cafeData.name} saved! 💖`);
-        // Heart pop animation (try icon, fallback to button)
-        let heartBtn = wrapper.querySelector('.accept-button i');
-        if (!heartBtn) {
-            heartBtn = wrapper.querySelector('.accept-button');
-        }
-        if (heartBtn) {
-            heartBtn.classList.remove('heart-pop'); // reset if needed
-            void heartBtn.offsetWidth; // force reflow
-            heartBtn.classList.add('heart-pop');
-        }
-    } else {
-        showToast(`${cafeData.name} is already saved! 😊`);
+  let saved = JSON.parse(localStorage.getItem('savedCafes') || '[]');
+  const key = cafeKeyByNameAddress(cafeData);
+  // Duplicate if same id OR same name+address key
+  const isDuplicate = saved.some(c => c.place_id === cafeData.place_id || cafeKeyByNameAddress(c) === key);
+  if (!isDuplicate) {
+    saved.push(cafeData);
+    localStorage.setItem('savedCafes', JSON.stringify(saved));
+    showToast(`${cafeData.name} saved! 💖`);
+    let heartBtn = wrapper.querySelector('.accept-button i') || wrapper.querySelector('.accept-button');
+    if (heartBtn) {
+      heartBtn.classList.remove('heart-pop');
+      void heartBtn.offsetWidth;
+      heartBtn.classList.add('heart-pop');
     }
-    
-    wrapper.style.transform = 'translateX(150%) rotate(15deg)';
-    wrapper.style.opacity = 0;
-    setTimeout(() => {
-        wrapper.remove();
-        checkForEmptyState();
-    }, 300);
+  } else {
+    showToast(`${cafeData.name} is already saved! 😊`);
+  }
+  wrapper.style.transform = 'translateX(150%) rotate(15deg)';
+  wrapper.style.opacity = 0;
+  setTimeout(() => {
+    wrapper.remove();
+    checkForEmptyState();
+  }, 300);
 }
 
 function checkForEmptyState() {
@@ -347,50 +350,66 @@ function getPriceLevelSymbols(priceLevel) {
 }
 
 function showSaved() {
-    document.querySelector('.cards').style.display = 'none';
-    document.querySelector('.cards').innerHTML = '';
-    const savedContainer = document.querySelector('.saved-cafes');
-    savedContainer.style.display = 'grid';
-    document.querySelectorAll('.action-button').forEach(btn => btn.classList.remove('active'));
-    const savedBtn = document.querySelector('.saved-btn');
-    if (savedBtn) {
-        savedBtn.classList.add('active');
-    }
-    const savedCafes = JSON.parse(localStorage.getItem('savedCafes') || '[]');
-    if (savedCafes.length === 0) {
-        savedContainer.innerHTML = `
-            <div class="empty-state">
-                <i class="fas fa-heart" style="font-size: 3rem; color: #1e3d59; margin-bottom: 1rem;"></i>
-                <p>You have no saved cafes yet. Start exploring and save your favorite ones!</p>
-            </div>
-        `;
-    } else {
-        savedContainer.innerHTML = savedCafes.map(cafe => `
-            <div class="saved-card">
-                <img src="${cafe.photo}" alt="${cafe.name}" />
-                <div class="saved-card-content">
-                    <h3>${cafe.name}</h3>
-                    <div class="saved-card-details">
-                        ${cafe.rating !== 'N/A' ? getStarRating(cafe.rating) : ''}
-                        ${cafe.priceLevel !== 'N/A' ? `<p class="price-level">${getPriceLevelSymbols(cafe.priceLevel)}</p>` : ''}
-                        ${cafe.openNow ? '<p class="open-now"><i class="fas fa-clock"></i> Open</p>' : ''}
-                        ${cafe.type ? `<p class="place-type"><i class="fas fa-utensils"></i> ${cafe.type}</p>` : ''}
-                    </div>
-                    <p class="saved-card-address"><i class="fas fa-map-marker-alt"></i> ${cafe.address}</p>
-                    <div class="saved-card-actions">
-                        <button class="action-button" onclick="openMap('${cafe.name}', '${cafe.address}')">
-                            <i class="fas fa-map"></i> View on Map
-                        </button>
-                        <button class="action-button remove-button" onclick="removeSavedCafe(this)">
-                            <i class="fas fa-trash"></i> Remove
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `).join('');
-    }
+  document.querySelector('.cards').style.display = 'none';
+  document.querySelector('.cards').innerHTML = '';
+  const savedContainer = document.querySelector('.saved-cafes');
+  savedContainer.style.display = 'grid';
+  document.querySelectorAll('.action-button').forEach(btn => btn.classList.remove('active'));
+  document.querySelector('.action-button.saved-btn').classList.add('active');
+  const savedCafes = JSON.parse(localStorage.getItem('savedCafes') || '[]');
+  // Deduplicate by name+address key (covers different IDs for same place)
+  const uniqueMap = new Map();
+  for (const c of savedCafes) {
+    const key = cafeKeyByNameAddress(c);
+    if (!uniqueMap.has(key)) uniqueMap.set(key, c);
+  }
+  const uniqueCafes = Array.from(uniqueMap.values());
+  // Persist cleaned list to localStorage to keep it tidy
+  localStorage.setItem('savedCafes', JSON.stringify(uniqueCafes));
+
+  if (uniqueCafes.length === 0) {
+    savedContainer.innerHTML = `
+      <div class="empty-state">
+        <i class="fas fa-heart" style="font-size: 3rem; color: #1e3d59; margin-bottom: 1rem;"></i>
+        <p>You have no saved cafes yet. Start exploring and save your favorite ones!</p>
+      </div>
+    `;
+  } else {
+    savedContainer.innerHTML = uniqueCafes.map(cafe => `
+      <div class="saved-card" data-place-id="${cafe.place_id || ''}" data-key="${cafeKeyByNameAddress(cafe)}">
+        <img src="${cafe.photo}" alt="${cafe.name}" />
+        <div class="saved-card-content">
+          <h3>${cafe.name}</h3>
+          <div class="saved-card-details">
+            ${cafe.rating !== 'N/A' ? getStarRating(cafe.rating) : ''}
+            ${cafe.priceLevel !== 'N/A' ? `<p class="price-level">${getPriceLevelSymbols(cafe.priceLevel)}</p>` : ''}
+            ${cafe.openNow ? '<p class="open-now"><i class="fas fa-clock"></i> Open</p>' : ''}
+            ${cafe.type ? `<p class="place-type"><i class="fas fa-utensils"></i> ${cafe.type}</p>` : ''}
+          </div>
+          <p class="saved-card-address"><i class="fas fa-map-marker-alt"></i> ${cafe.address}</p>
+          <div class="saved-card-actions">
+            <button class="action-button" onclick="openMap('${cafe.name}', '${cafe.address}')">
+              <i class="fas fa-map"></i> View on Map
+            </button>
+            <button class="action-button remove-button" onclick="removeSavedCafe(this)">
+              <i class="fas fa-trash"></i> Remove
+            </button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
 }
 
+// Ensure highlight is removed only when switching views
+function showMain() {
+    document.querySelector('.saved-cafes').style.display = 'none';
+    document.querySelector('.cards').style.display = 'block';
+    document.querySelectorAll('.action-button').forEach(btn => btn.classList.remove('active'));
+    document.querySelector('.action-button.near-me').classList.add('active');
+}
+
+// Clear saved cafes
 function clearSaved() {
     if (confirm('Are you sure you want to clear all saved cafes?')) {
         localStorage.removeItem('savedCafes');
@@ -399,6 +418,7 @@ function clearSaved() {
     }
 }
 
+// Clear rejected cafes
 function clearRejected() {
     rejectedCafes.clear();
     localStorage.removeItem('rejectedCafes');
@@ -416,4 +436,34 @@ function openMap(name, address) {
     const query = encodeURIComponent(`${name}, ${address}`);
     const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${query}`;
     window.open(mapsUrl, '_blank');
+}
+
+
+function removeSavedCafe(button) {
+  const cafeCard = button.closest('.saved-card');
+  const placeId = cafeCard.dataset.placeId;
+  const key = cafeCard.dataset.key;
+  let savedCafes = JSON.parse(localStorage.getItem('savedCafes') || '[]');
+  // Remove by id if present, else by name+address key
+  savedCafes = savedCafes.filter(c => {
+    if (placeId) return c.place_id !== placeId;
+    return cafeKeyByNameAddress(c) !== key;
+  });
+  localStorage.setItem('savedCafes', JSON.stringify(savedCafes));
+  showToast(`${cafeCard.querySelector('h3').innerText} has been removed from your saved cafes!`);
+  showSaved();
+}
+
+// Save cafe data to local storage
+function saveCafe(cafeData) {
+  let saved = JSON.parse(localStorage.getItem('savedCafes') || '[]');
+  const isDuplicate = saved.some(c => c.place_id === cafeData.place_id);
+  if (isDuplicate) {
+    showToast(`${cafeData.name} is already saved! 😊`);
+    return;
+  }
+  saved.push(cafeData);
+  localStorage.setItem('savedCafes', JSON.stringify(saved));
+  showToast(`${cafeData.name} saved! 💖`);
+  showSaved();
 }
