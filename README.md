@@ -38,8 +38,7 @@ Option A — Open directly (no build):
 Option B — Serve locally (recommended):
 ```bash
 # Python 3 simple server
-python3 -m http.server 5500
-# open http://127.0.0.1:5500/index.html
+python3 -m http.server (any portnum of your choice)
 ```
 
 ## 🔧 Configuration (optional)
@@ -87,9 +86,6 @@ State is saved in localStorage:
 
 Issues and PRs are welcome. If proposing UI changes, include a screenshot or quick mock to speed up review.
 
-## 📄 License
-
-MIT
 
 —
 
