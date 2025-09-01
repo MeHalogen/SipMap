@@ -26,6 +26,25 @@ document.addEventListener('DOMContentLoaded', function() {
     document.head.appendChild(style);
 });
 
+function showSkeletonCards(count = 3) {
+    const container = document.querySelector('.cards');
+    container.innerHTML = '';
+    for (let i = 0; i < count; i++) {
+        container.innerHTML += `
+            <div class="skeleton-card">
+                <div class="skeleton-img"></div>
+                <div class="skeleton-content">
+                    <div class="skeleton-line"></div>
+                    <div class="skeleton-line short"></div>
+                    <div class="skeleton-line"></div>
+                    <div class="skeleton-line short"></div>
+                </div>
+            </div>
+        `;
+    }
+}
+
+// Show skeletons while loading in searchByText
 async function searchByText() {
     const searchInput = document.getElementById('locationSearch');
     const query = searchInput.value.trim();
@@ -39,7 +58,7 @@ async function searchByText() {
     document.querySelector('.saved-cafes').style.display = 'none';
     // Clear the saved container to prevent z-index issues
     document.querySelector('.saved-cafes').innerHTML = '';
-
+    showSkeletonCards(); // <--- show skeletons while loading
     try {
         const response = await fetch(`${API_BASE_URL}/api/search-cafes?query=${encodeURIComponent(query)}`);
         const data = await response.json();
@@ -55,12 +74,13 @@ async function searchByText() {
     }
 }
 
+// Show skeletons while loading in getLocationCachedOrNew
 function getLocationCachedOrNew() {
     document.querySelector('.cards').style.display = 'block';
     document.querySelector('.saved-cafes').style.display = 'none';
     // Clear the saved container to prevent z-index issues
     document.querySelector('.saved-cafes').innerHTML = '';
-    
+    showSkeletonCards(); // <--- show skeletons while loading
     const cache = JSON.parse(localStorage.getItem('cachedLocation') || '{}');
     const now = Date.now();
     if (cache.timestamp && now - cache.timestamp < 10 * 60 * 1000) {
@@ -100,7 +120,27 @@ async function useLocation(lat, lng) {
     }
 }
 
+function getStarRating(rating) {
+    if (!rating || rating === 'N/A') return '';
+    const rounded = Math.round(parseFloat(rating) * 2) / 2; // round to nearest 0.5
+    let stars = '';
+    for (let i = 1; i <= 5; i++) {
+        if (rounded >= i) {
+            stars += '<i class="fas fa-star" style="color:#fbbf24"></i>';
+        } else if (rounded >= i - 0.5) {
+            stars += '<i class="fas fa-star-half-alt" style="color:#fbbf24"></i>';
+        } else {
+            stars += '<i class="far fa-star" style="color:#334155"></i>';
+        }
+    }
+    return `<span class="star-rating">${stars} <span class="rating-number">${rating}</span></span>`;
+}
+
+let fullCafeResults = [];
+let lastSurpriseIndex = null;
+
 function displayCards(cafes) {
+    fullCafeResults = cafes;
     const container = document.querySelector('.cards');
     container.innerHTML = '';
     
@@ -153,7 +193,7 @@ function displayCards(cafes) {
             <div class="card-content">
                 <h3>${cafe.name}</h3>
                 <div class="card-details">
-                    ${cafe.rating !== 'N/A' ? `<p class="rating"><i class="fas fa-star"></i> ${cafe.rating}</p>` : ''}
+                    ${cafe.rating !== 'N/A' ? getStarRating(cafe.rating) : ''}
                     ${cafe.priceLevel !== 'N/A' ? `<p class="price-level">${getPriceLevelSymbols(cafe.priceLevel)}</p>` : ''}
                     ${cafe.openNow ? '<p class="open-now"><i class="fas fa-clock"></i> Open</p>' : ''}
                     ${cafe.type ? `<p class="place-type"><i class="fas fa-utensils"></i> ${cafe.type}</p>` : ''}
@@ -190,6 +230,21 @@ function displayCards(cafes) {
     });
 }
 
+function surpriseMe() {
+    if (!fullCafeResults || fullCafeResults.length === 0) {
+        showToast('No cafes to surprise you with!');
+        return;
+    }
+    let randomIndex;
+    do {
+        randomIndex = Math.floor(Math.random() * fullCafeResults.length);
+    } while (fullCafeResults.length > 1 && randomIndex === lastSurpriseIndex);
+    lastSurpriseIndex = randomIndex;
+    // Move the random cafe to the top, keep the rest in order
+    const newOrder = [fullCafeResults[randomIndex], ...fullCafeResults.filter((_, i) => i !== randomIndex)];
+    displayCards(newOrder);
+}
+
 function rejectCafe(wrapper) {
     const placeId = wrapper.querySelector('.location-card').dataset.placeId;
     rejectedCafes.add(placeId);
@@ -221,6 +276,16 @@ function acceptCafe(wrapper, cafeData) {
         saved.push(cafeData);
         localStorage.setItem('savedCafes', JSON.stringify(saved));
         showToast(`${cafeData.name} saved! 💖`);
+        // Heart pop animation (try icon, fallback to button)
+        let heartBtn = wrapper.querySelector('.accept-button i');
+        if (!heartBtn) {
+            heartBtn = wrapper.querySelector('.accept-button');
+        }
+        if (heartBtn) {
+            heartBtn.classList.remove('heart-pop'); // reset if needed
+            void heartBtn.offsetWidth; // force reflow
+            heartBtn.classList.add('heart-pop');
+        }
     } else {
         showToast(`${cafeData.name} is already saved! 😊`);
     }
@@ -283,7 +348,6 @@ function getPriceLevelSymbols(priceLevel) {
 
 function showSaved() {
     document.querySelector('.cards').style.display = 'none';
-    // Clear the cards container to prevent z-index issues
     document.querySelector('.cards').innerHTML = '';
     const savedContainer = document.querySelector('.saved-cafes');
     savedContainer.style.display = 'grid';
@@ -307,7 +371,7 @@ function showSaved() {
             <div class="card-content">
                 <h3>${cafe.name}</h3>
                 <div class="card-details">
-                    ${cafe.rating !== 'N/A' ? `<p class="rating"><i class="fas fa-star"></i> ${cafe.rating}</p>` : ''}
+                    ${cafe.rating !== 'N/A' ? getStarRating(cafe.rating) : ''}
                     ${cafe.priceLevel !== 'N/A' ? `<p class="price-level">${getPriceLevelSymbols(cafe.priceLevel)}</p>` : ''}
                 </div>
                 <p class="address"><i class="fas fa-map-marker-alt"></i> ${cafe.address}</p>
@@ -316,7 +380,6 @@ function showSaved() {
                         <i class="fas fa-map"></i> View on Map
                     </button>
                 </div>
-                
             </div>
         </div>
     `).join('');

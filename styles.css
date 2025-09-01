@@ -49,15 +49,11 @@ body {
 
 /* Navigation */
 .top-nav {
-    background-color: var(--card-bg);
-    padding: 1rem 1.5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: var(--shadow-sm);
     position: sticky;
     top: 0;
     z-index: 100;
+    background: var(--navy-900);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
 .brand {
@@ -106,6 +102,7 @@ body {
 }
 
 .search-container {
+    z-index: 1;
     width: 100%;
     max-width: 800px;
     margin: var(--spacing-lg) auto;
@@ -380,10 +377,13 @@ button:hover {
 .card-actions .accept-button {
     background: var(--primary-color);
     color: var(--text-bright);
+    transition: background 0.3s, transform 0.3s;
 }
 
 .card-actions .accept-button:hover {
-    background: var(--primary-hover);
+    background: #22c55e; /* Tailwind green-500 */
+    color: var(--text-bright);
+    transform: scale(1.08);
 }
 
 .card-actions .reject-button:hover {
@@ -428,6 +428,8 @@ button:hover {
     margin: 0 0 var(--spacing-sm);
     font-size: 1.5rem;
     font-weight: 600;
+    text-align: center;
+    width: 100%; 
 }
 
 .location-card p {
@@ -442,6 +444,8 @@ button:hover {
     color: #666;
     margin-top: 1rem;
     padding: 0 1rem;
+    text-align: center;
+    width: 100%; 
 }
 
 .card-details {
@@ -522,10 +526,12 @@ button:hover {
 
 .contact-info a,
 .contact-info .map-button {
+    width: 100%;
     color: var(--text-secondary);
     text-decoration: none;
     font-size: 0.875rem;
     padding: var(--spacing-xs) var(--spacing-sm);
+    margin-top: 5px;
     border-radius: var(--radius-pill);
     background: var(--navy-700);
     border: 1px solid var(--border-color);
@@ -631,4 +637,52 @@ button:hover {
     background: var(--navy-900);
     padding: var(--spacing-lg);
     border-radius: var(--radius-lg);
+}
+
+.star-rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    font-size: 1.1rem;
+}
+
+.star-rating .fa-star,
+.star-rating .fa-star-half-alt {
+    color: #fbbf24;
+    margin-right: 1px;
+}
+
+.star-rating .fa-star-half-alt {
+    margin-left: -2px;
+}
+
+.star-rating .fa-star,
+.star-rating .fa-star-half-alt,
+.star-rating .far.fa-star {
+    font-size: 1.1em;
+}
+
+.star-rating .rating-number {
+    color: #94a3b8;
+    font-size: 0.95em;
+    margin-left: 6px;
+}
+
+@keyframes heart-pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.4); }
+  70% { transform: scale(0.9); }
+  100% { transform: scale(1); }
+}
+.heart-pop {
+  animation: heart-pop 0.5s cubic-bezier(.34,1.56,.64,1) 1;
+}
+/* Optional: add a sparkle effect */
+@keyframes heart-sparkle {
+  0% { filter: drop-shadow(0 0 0px #fff); }
+  50% { filter: drop-shadow(0 0 8px #fff); }
+  100% { filter: drop-shadow(0 0 0px #fff); }
+}
+.heart-sparkle {
+  animation: heart-sparkle 0.5s linear 1;
 }
