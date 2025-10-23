@@ -1,7 +1,10 @@
 const express = require('express');
 const cors = require('cors');
 const fetch = require('node-fetch');
-require('dotenv').config();
+const path = require('path');
+
+// Configure dotenv to read from the root project directory
+require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 
 // Middleware to log request details
 const logRequestDetails = (req, res, next) => {

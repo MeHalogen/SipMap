@@ -41,10 +41,18 @@ Option B — Serve locally (recommended):
 python3 -m http.server (any portnum of your choice)
 ```
 
-## 🔧 Configuration (optional)
-If you use a backend or API keys, copy `.env.example` to `.env` and fill in values. The front‑end reads from your environment only if you wire a server or bundler that injects them.
+## 🔧 Configuration
 
-- `.env.example` — reference for required variables
+### 🔑 API Key Setup (Simplified)
+
+**One place to manage your API key:** Edit the `.env` file in the root directory
+
+1. **Edit `.env`**: Replace `your_google_maps_api_key_here` with your actual API key  
+2. **Restart server**: If running the backend, restart to pick up changes
+
+See `CONFIG.md` for detailed instructions.
+
+### Google Cloud Setup
 
  - Set up your project in the Google Cloud Console. You'll enter a project name and billing information. Your website won't work as it should unless you enable billing, but you won't be charged if the API doesn't get called past the monthly limit (we'll teach you how to cap it at the limit, which is usually 10,000 API calls).
  
