@@ -16,13 +16,6 @@ The application uses **ONE** configuration file for the Google Maps API key:
 2. **Update the key**: Change `GOOGLE_MAPS_API_KEY=your_current_key` to your new key
 3. **Restart the server**: The server will automatically pick up the new key
 
-### Example .env file:
-```bash
-GOOGLE_MAPS_API_KEY=AIzaSyAOFpadsj8FUVZatR4TpCtr2gTCcEdOTAY
-PORT=3000
-NODE_ENV=production
-```
-
 ## 🔄 Quick Restart Commands
 
 When you change the API key, restart the server:
